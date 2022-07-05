@@ -1,0 +1,74 @@
+#popup-delete {
+    width: 514px;
+    height: 306px !important;
+    padding: 25px 43px;
+    overflow-y: hidden;
+}
+
+.del-list-title {
+    text-align: center;
+    font: normal normal bold 20px/27px Segoe UI;
+    letter-spacing: 0px;
+    color: #000000;
+    opacity: 1;
+}
+
+.contained-button-file {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.stack-delete {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stack-delete>p {
+    /* UI Properties */
+    text-align: center;
+    font: normal normal normal 16px/21px Segoe UI;
+    letter-spacing: 0px;
+    color: #000000;
+    opacity: 1;
+    padding-top: 12px;
+}
+
+.del-content {
+    text-align: center;
+    font: normal normal normal 16px/21px Segoe UI;
+    letter-spacing: 0px;
+    color: #000000;
+    opacity: 1;
+}
+
+.delete-icon {
+    width: 50px;
+    height: 57px;
+    background: transparent 0% 0% no-repeat padding-box;
+    opacity: 1;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.btn-del {
+    padding: 0 !important;
+    float: right;
+}
+
+#btn-delete {
+    width: 76px;
+    height: 43px;
+    background: #064EBC 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #00000029;
+    border-radius: 10px;
+    opacity: 1;
+
+    font: normal normal bold 13px/17px Segoe UI;
+    letter-spacing: 0px;
+}
+
+.hr-del {
+    margin: 20px 0 !important;
+}
