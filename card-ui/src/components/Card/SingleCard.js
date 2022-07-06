@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
 import axios from "axios";
-import images from '../../assets/images/index';
-import './SingleCard.css';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Image2x from '../../assets/images/Image1@2x.png';
+import images from '../../assets/images/index';
+import './SingleCard.css';
 // Material UI
-import Button from '@mui/material/Button';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
-
+import Button from '@mui/material/Button';
 function SingleCard() {
     const path = useParams();
     const [card, setCard] = useState([]);
@@ -21,7 +20,7 @@ function SingleCard() {
     // get api to display
     useEffect(() => {
         axios.get(`http://192.168.0.146:3032/api/card/${path.id}`)
-            .then((response) => setCard(response.data))
+            .then((response) => { setCard(response.data); setHeart(response.data.heart) })
             .catch((error) => console.log(error));
     }, []);
 
@@ -32,18 +31,17 @@ function SingleCard() {
             .catch((error) => console.log(error));
     }, []);
 
-    // get api to display heart
-    useEffect(() => {
-        axios.get(`http://192.168.0.146:3032/api/card/heart/${path.id}`)
-            .then((response) => setCard(response.data))
-            .catch((error) => console.log(error));
-    }, []);
+
 
 
     // Click like handle
-    const handleClick = () => {
-        isClicked = setHeart(heart + 1);
-        setIsClicked(!isClicked);
+    const handleClickTym = async () => {
+        // isClicked = setHeart(heart + 1);
+        // setIsClicked(!isClicked);
+        console.log("test handle Click Tym");
+        await axios.put(`http://192.168.0.146:3032/api/card/heart/${path.id}`)
+            .then((res) => { window.location.reload() })
+            .catch((err) => { console.log(err); })
     };
 
     // convert created date
@@ -103,9 +101,9 @@ function SingleCard() {
                     </div>
                     <div className="social-icons">
                         <div className='social-icon1'>
-                            <img onClick={handleClick}
+                            <img onClick={() => handleClickTym()}
                                 src={images.heart} alt="heart" className="heart-icon" />
-                            <div><span>{`${heart + 1}`}</span></div>
+                            <div><span>{`${heart}`}</span></div>
                         </div>
                         <div className='social-icon2'>
                             <img src={images.comment} alt="comment" className="comment-icon"

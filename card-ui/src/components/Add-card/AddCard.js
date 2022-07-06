@@ -64,14 +64,14 @@ function AddCard(props) {
     }
     const onImageChanged = async (e) => {
         const files = e.target.files
-        const avaData = new FormData()
-        avaData.append('file', files[0])
-        avaData.append('upload_preset', 'image-upload')
+        const imgData = new FormData()
+        imgData.append('file', files[0])
+        imgData.append('upload_preset', 'image-upload')
 
         const res = await fetch('https://api.cloudinary.com/v1_1/hieuduke123/image/upload',
             {
                 method: 'POST',
-                body: avaData
+                body: imgData
             }
         )
         const file = await res.json()
@@ -83,13 +83,14 @@ function AddCard(props) {
     // save card handle\
     const onSavePostClicked = async (event) => {
         let check = true
-        if (avatar && name && description) {
+        if (avatar && name && description && image) {
             dispatch(
-                cardAdded(avatar, name, description)
+                cardAdded(avatar, name, description, image)
             )
             setAvatar('')
             setName('')
             setDesc('')
+            setImage('')
             window.location.href = "/"
         }
         // validate name
@@ -128,6 +129,7 @@ function AddCard(props) {
         setAvatar('')
         setName('')
         setDesc('')
+        setImage('')
         setAvatarError(false)
         setDescError(false)
         setNameError(false)
@@ -208,7 +210,7 @@ function AddCard(props) {
                             onChange={onImageChanged} />
                         <div className='stack-upload'>
                             <img src={images.upload} alt="upload" className="upload-icon" />
-                            <div>{image !== '' ? image : 'Upload image'}</div>
+                            <div className='img-name'>{image !== '' ? image : 'Upload image'}</div>
                         </div>
                     </label>
                 </Stack>

@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 
 import './UpdateCard.css';
 import images from '../../assets/images/index';
-import { useParams } from 'react-router-dom';
 // Material UI
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';

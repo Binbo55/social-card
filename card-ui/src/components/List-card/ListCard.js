@@ -68,7 +68,7 @@ export const ListCard = () => {
         const dateAt = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
         return dateAt;
     };
-
+    console.log(filterCard);
     const renderedPosts = filterCard.map(post => (
         < article className="cards" key={post._id} >
             <div className="cards_header">
@@ -93,7 +93,7 @@ export const ListCard = () => {
             </div>
             <div className="cards_footer">
                 <div className="cards_desc">{post.description}</div>
-                <img className="cards_image" src={post.image || Image1} alt='' />
+                <img className="cards_image" src={!post.image ? Image1 : post.image} alt='' />
             </div>
         </article >
     ))
