@@ -9,7 +9,8 @@ const images = {
     heart: require("../../assets/images/heart-solid.svg").default,
     comment: require("../../assets/images/message-solid.svg").default,
     empty: require("../../assets/images/image-empty.svg").default,
-    reactangle: require("../../assets/images/Rectangle195.png").default,
+
+
 }
 
 export default images

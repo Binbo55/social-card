@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { InputGroup, FormControl } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { editCard } from '../CardSlice';
+
 import './UpdateCard.css';
 import images from '../../assets/images/index';
 import { useParams } from 'react-router-dom';
@@ -16,146 +16,169 @@ import DialogContent from '@mui/material/DialogContent';
 import Dialog from '@mui/material/Dialog';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 
+import { editCard } from '../CardSlice';
+
 
 UpdateCard.propTypes = {
 
 };
 
 function UpdateCard(props) {
-    const { edit, editId, handleCloseEdit } = props
+    const { edit, handleCloseEdit, getId } = props
+
     const [avatar, setAvatar] = useState('')
     const [name, setName] = useState('')
     const [description, setDesc] = useState('')
     const [image, setImage] = useState('')
 
-    const [editCard, setEditCard] = useState([])
+    const [nameError, setNameError] = useState(false)
+    const [avatarError, setAvatarError] = useState(false)
+    const [descError, setDescError] = useState(false)
 
-    const [nameEditErr, setNameEditErr] = useState(false)
-    const [descEditErr, setDescEditErr] = useState(false)
-    const [avatarEditErr, setAvatarEditErr] = useState(false)
+
     const dispatch = useDispatch();
 
-
-    // get Api to display
-    function handleUpdate() {
-        dispatch(editCard(editId))
-        window.location.reload()
-    }
+    // useEffect(() => {
+    //     editCard.get(edit)
+    //         .then((res) => {
+    //             setName(res.name);
+    //             setAvatar(res.avatar);
+    //             setDesc(res.description);
+    //             setImage(res.image);
+    //         })
+    //         .catch((err) => console.log(err))
+    // })
 
     const onAvatarChanged = (e) => {
         setAvatar(e.target.value)
-        setAvatarEditErr('')
+        setAvatarError("")
+        console.log(e.target.value)
+        console.log(avatarError)
     }
 
     const onNameChanged = (e) => {
         setName(e.target.value)
-        setNameEditErr('')
+        setNameError('')
     }
 
     const onDescriptionChanged = (e) => {
         setDesc(e.target.value)
-        setDescEditErr('')
+        setDescError('')
     }
     const onImageChanged = (e) => {
         setImage(e.target.value)
     }
 
-    // useEffect(() => {
-    //     axios.get(`http://192.168.0.146:3032/api/card/${path.id}`)
-    //         .then((response) => setCard(response.data))
-    //         .catch((error) => console.log(error));
-    // }, []);
-
-
-    // save card handle
-    const onSavePostClicked = async (e) => {
+    // save card handle\
+    const onSavePostClicked = async (event) => {
         let check = true
-        if (avatar && name && description) {
-            dispatch(
-                editCard(avatar, name, description)
+        const id = getId
+
+        if (check) {
+
+            await dispatch(
+                editCard(id, avatar, name, description)
             )
             setAvatar('')
             setName('')
             setDesc('')
+            console.log('update thanfh coong')
             window.location.href = "/"
         }
-        // avatar
-        if (avatar === "") {
-            check = false
-            setAvatarEditErr(true)
-        }
-        else {
-            check = true
-            setAvatarEditErr(false)
-        }
-        // name
+        // validate name
         if (name === "") {
             check = false
-            setNameEditErr(true)
-        }
-        else {
+            setNameError(true)
+            event.preventDefault();
+        } else {
             check = true
-            setNameEditErr(false)
+            setNameError(false)
         }
         // description
         if (description === "") {
             check = false
-            setDescEditErr(true)
+            setDescError(true)
+            event.preventDefault();
         }
         else {
             check = true
-            setDescEditErr(false)
+            setDescError(false)
         }
-        e.preventDefault();
+
+        if (avatar === "") {
+            check = false
+            setAvatarError(true)
+            event.preventDefault();
+        }
+        else {
+            check = true
+            setAvatarError(false)
+        }
+
     }
 
 
-
-
-    const handleCancelEdit = () => {
+    // handlerCloseCancel
+    const handlerCloseCancel = () => {
         setAvatar('')
         setName('')
         setDesc('')
-
-        setAvatarEditErr(false)
-        setDescEditErr(false)
-        setNameEditErr(false)
+        setAvatarError(false)
+        setDescError(false)
+        setNameError(false)
         handleCloseEdit()
     }
 
     return (
         <Dialog
-            className="wrap-popup-add-edit"
+            // to={`/update/${post._id}`}
+            // onSubmit={handleSubmit(onSubmit)}
+            // className="wrap-popup-add"
+            BackdropProps={{
+                style: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                    boxShadow: 'none',
+                },
+            }}
+            PaperProps={{
+                style: {
+                    boxShadow: 'none',
+                },
+            }}
             open={edit}
             onClose={handleCloseEdit}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description">
-            <DialogContent id="popup-dialog-edit" >
-                <div className='add-list-heard-edit'>Edit Card</div>
-                <Stack id="stack-add-edit"
-                    direction="row"
-                    spacing={6}
-                    style={avatarEditErr ? { color: "#F3115E" } : { color: "#000" }}
-                >
-                    <div className='content-title-edit'>Avatar<span>*</span></div>
-                    <label htmlFor="contained-button-file-edit">
-                        <Input accept="image/*" id="contained-button-file-edit" multiple type="file"
+            <DialogContent id="popup-dialog" >
+                <div className='add-list-heard'>Edit Card</div>
+                <Stack id="stack-add"
+                    style={avatarError ? { color: "#F3115E" } : { color: "#000" }}
+
+                    className='stack'
+                    direction="row" spacing={6}>
+                    <div className='content-title'>Avatar<span>*</span></div>
+                    <label htmlFor="contained-button-file">
+                        <Input accept="image/*" id="contained-button-file"
+
+                            className="stack-input-ava"
+                            multiple type="file"
+                            name='avatar'
                             value={avatar}
-                            onChange={onAvatarChanged}
-                        />
-                        <div className='stack-upload-edit' >
-                            <img src={avatarEditErr ? images.red : images.upload} alt="upload" className="upload-icon" />
-                            <div className='content-upload' >{avatar || 'image'}</div>
+                            onChange={onAvatarChanged} />
+                        <div className='stack-upload'>
+                            <img src={avatarError ? images.red : images.upload}
+                                // style={inputError ? {} : {backgroundImage: url(images.upload)}}
+                                className="upload-icon" />
+                            <div className='content-upload'>Upload image</div>
                         </div>
                     </label>
                 </Stack>
-                <Stack id="stack-add-edit" direction="row" spacing={6.3}
-                    style={nameEditErr ? { color: "#F3115E" } : { color: "#000" }}
-                >
-                    <div className='content-title-edit'>Name<span>*</span></div>
-                    <InputGroup className="stack-input-edit"
-                        style={nameEditErr ? { border: "1px solid #F3115E", borderRadius: "5px" } : { color: "#000" }}
-                    >
+                <Stack id="stack-add"
+                    className='stack'
+                    style={nameError ? { color: "#F3115E" } : { color: "#000" }}
+                    direction="row" spacing={6.3}>
+                    <div className='content-title'>Name<span>*</span></div>
+                    <InputGroup className="stack-input" style={nameError ? { border: "1px solid #F3115E", borderRadius: "5px" } : { color: "#000" }} >
                         <FormControl
                             placeholder="Name"
                             aria-label="Username"
@@ -165,46 +188,52 @@ function UpdateCard(props) {
                         />
                     </InputGroup>
                 </Stack>
-                <Stack id="stack-add-edit"
-                    direction="row"
-                    spacing={1.4}
-                    style={descEditErr ? { color: "#F3115E" } : { color: "#000" }}
-                >
-                    <div className='content-title-edit'>Description<span>*</span></div>
-                    <InputGroup className="">
+                <Stack id="stack-add"
+                    style={descError ? { color: "#F3115E" } : {}}
+                    className='stack'
+                    direction="row" spacing={1.4}>
+                    <div className='content-title'>Description<span>*</span></div>
+                    <InputGroup className="stack-input">
                         <TextareaAutosize
-                            className='edit-text-area'
-                            style={descEditErr ? { border: "1px solid #F3115E" } : { color: "#000" }}
+                            className='text-area'
                             placeholder="Description"
                             aria-label="Username"
                             value={description}
                             aria-describedby="basic-addon1"
                             onChange={onDescriptionChanged}
+                            style={descError ? { border: "1px solid #F3115E" } : {}}
                         />
                     </InputGroup>
                 </Stack>
-                <Stack id="stack-add-edit" direction="row" spacing={6.8} alignItems="center" >
-                    <div className='content-title-edit'> Image:</div>
+                <Stack id="stack-add" direction="row" spacing={6.8} alignItems="center" >
+                    <div className='content-title'> Image:</div>
                     <label htmlFor="contained-button-file">
-                        <Input accept="image/*" id="contained-button-file" multiple type="file" value={image} onChange={onImageChanged} />
-                        <div className='stack-upload-edit'>
-                            <img src={images.upload} alt="upload" className="upload-icon-edit" />
+                        <Input accept="image/*"
+                            id="contained-button-file"
+                            multiple type="file"
+                            value={image}
+                            onChange={onImageChanged} />
+                        <div className='stack-upload'>
+                            <img src={images.upload} alt="upload" className="upload-icon" />
                             <div>Upload image</div>
                         </div>
                     </label>
                 </Stack>
-                <hr className='hr-add-edit' />
-                <DialogActions className='btn-group-edit'>
+                <hr className='hr-add' />
+                <DialogActions className='btn-group'>
                     <Button id='btn-save'
                         style={{ backgroundColor: '#064EBC' }}
                         variant="contained"
                         onClick={onSavePostClicked}>
                         Save
                     </Button>
-                    <Button id='btn-cancel-edit' onClick={handleCancelEdit}>Cancel</Button>
+                    <Button id='btn-cancel' onClick={handlerCloseCancel}>Cancel</Button>
                 </DialogActions>
+
             </DialogContent>
         </Dialog>
+
+
     );
 }
 

@@ -12,16 +12,27 @@ DelCard.propTypes = {};
 
 function DelCard(props) {
     const dispatch = useDispatch();
-    const { del, handleCloseDel, delId } = props
+    const { del, handleCloseDel, getId } = props
 
     // handle delete and update
     function handleDelete() {
-        dispatch(deleteCard(delId))
+        dispatch(deleteCard(getId))
         window.location.reload()
     }
 
     return (
         <Dialog
+            BackdropProps={{
+                style: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                    boxShadow: 'none',
+                },
+            }}
+            PaperProps={{
+                style: {
+                    boxShadow: 'none',
+                },
+            }}
             open={del}
             onClose={handleCloseDel}
             aria-labelledby="alert-dialog-title"
@@ -44,7 +55,7 @@ function DelCard(props) {
                     <Button id='btn-delete'
                         style={{ backgroundColor: '#064EBC' }}
                         variant="contained"
-                        onClick={() => handleDelete(delId)}
+                        onClick={() => handleDelete(getId)}
                     >
                         Delete
                     </Button>

@@ -3,6 +3,7 @@ import axios from "axios";
 import images from '../../assets/images/index';
 import './SingleCard.css';
 import { useParams } from 'react-router-dom';
+import Image2x from '../../assets/images/Image1@2x.png';
 // Material UI
 import Button from '@mui/material/Button';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
@@ -12,31 +13,36 @@ function SingleCard() {
     const [card, setCard] = useState([]);
     const [comments, setComments] = useState([]);
     const [saveComment, setSaveComment] = useState("");
-    const [hidden, setHidden] = useState();
-    const [like, setLike] = useState(0);
+    const [heart, setHeart] = useState(0);
     const [isClicked, setIsClicked] = useState(false);
     const [comentError, setCommentError] = useState(false);
 
 
     // get api to display
     useEffect(() => {
-        axios.get(`http://localhost:3032/api/card/${path.id}`)
+        axios.get(`http://192.168.0.146:3032/api/card/${path.id}`)
             .then((response) => setCard(response.data))
             .catch((error) => console.log(error));
     }, []);
 
     // get api to display comment
     useEffect(() => {
-        axios.get(`http://localhost:3032/api/comment/card/${path.id}`)
+        axios.get(`http://192.168.0.146:3032/api/comment/card/${path.id}`)
             .then((response) => setComments(response.data))
             .catch((error) => console.log(error));
     }, []);
 
+    // get api to display heart
+    useEffect(() => {
+        axios.get(`http://192.168.0.146:3032/api/card/heart/${path.id}`)
+            .then((response) => setCard(response.data))
+            .catch((error) => console.log(error));
+    }, []);
 
 
     // Click like handle
     const handleClick = () => {
-        isClicked = setLike(like + 1);
+        isClicked = setHeart(heart + 1);
         setIsClicked(!isClicked);
     };
 
@@ -76,7 +82,6 @@ function SingleCard() {
             setCommentError(false)
             setComments('')
         }
-
     }
 
     return (
@@ -94,13 +99,13 @@ function SingleCard() {
                     <div className="social-desc">{card.description}</div>
                     <div className='social-images'>
                         <img
-                            className="social-image" src={card.image} alt='' />
+                            className="social-image" src={card.image || Image2x} alt='' />
                     </div>
                     <div className="social-icons">
                         <div className='social-icon1'>
                             <img onClick={handleClick}
                                 src={images.heart} alt="heart" className="heart-icon" />
-                            <div><span>{`${like + 1}`}</span></div>
+                            <div><span>{`${heart + 1}`}</span></div>
                         </div>
                         <div className='social-icon2'>
                             <img src={images.comment} alt="comment" className="comment-icon"

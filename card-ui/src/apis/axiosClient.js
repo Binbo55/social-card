@@ -2,7 +2,7 @@ import axios from 'axios';
 import queryString from 'query-string';
 
 const AxiosClient = axios.create({
-    baseURL: 'http://localhost:3032/api/card',
+    baseURL: 'http://192.168.0.146:3032/api/card',
     headers: {
         'content-type': 'application/json'
     },

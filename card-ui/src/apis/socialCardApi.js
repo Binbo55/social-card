@@ -19,13 +19,12 @@ const SocialCardsApi = {
         const url = "/" + id;
         return AxiosClient.delete(url)
     },
-    update: (data) => {
-        return AxiosClient.post("/update", data)
+    update: (id, data) => {
+        return AxiosClient.put(`/${id}`, data)
     },
-
-    // updateStatus: (id, value) => {
-    //     return AxiosClient.get('/socialcards/update-status/' + id + '/' + value)
-    // },
+    updateStatus: (id, value) => {
+        return AxiosClient.get('/socialcards/update-status/' + id + '/' + value)
+    },
     // revertUndo : (id) => {
     //     const url = "/socialcards/revertundo/" + id;
     //     return AxiosClient.get(url)

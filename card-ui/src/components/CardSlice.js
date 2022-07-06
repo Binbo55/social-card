@@ -31,12 +31,13 @@ const CardSlice = createSlice({
         },
         editCard: {
             reducer(state, action) {
-                socialCardApi.saveAll(action.payload)
+                socialCardApi.update(action.payload.id, action.payload)
                 console.log(action.payload)
             },
-            prepare(avatar, name, description, image) {
+            prepare(id, avatar, name, description, image) {
                 return {
                     payload: {
+                        id,
                         avatar,
                         name,
                         description,

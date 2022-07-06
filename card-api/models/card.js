@@ -10,6 +10,7 @@ const CardSchema = new mongoose.Schema(
             unique: true,
         },
         description: { type: String },
+        heart: { type: Number, default: 0 },
         image: { type: String },
     },
     { timestamps: true, }

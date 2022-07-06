@@ -35,9 +35,23 @@ function AddCard(props) {
 
     const dispatch = useDispatch();
 
-    const onAvatarChanged = (e) => {
-        setAvatar(e.target.value)
-        setAvatarError('')
+    const onAvatarChanged = async (e) => {
+        const files = e.target.files
+        const avaData = new FormData()
+        avaData.append('file', files[0])
+        avaData.append('upload_preset', 'ava-upload')
+
+        const res = await fetch('https://api.cloudinary.com/v1_1/hieuduke123/image/upload',
+            {
+                method: 'POST',
+                body: avaData
+            }
+        )
+
+        const file = await res.json()
+        console.log(file)
+        setAvatar(file.secure_url)
+        setAvatarError(false)
     }
     const onNameChanged = (e) => {
         setName(e.target.value)
@@ -48,8 +62,21 @@ function AddCard(props) {
         setDesc(e.target.value)
         setDescError('')
     }
-    const onImageChanged = (e) => {
-        setImage(e.target.value)
+    const onImageChanged = async (e) => {
+        const files = e.target.files
+        const avaData = new FormData()
+        avaData.append('file', files[0])
+        avaData.append('upload_preset', 'image-upload')
+
+        const res = await fetch('https://api.cloudinary.com/v1_1/hieuduke123/image/upload',
+            {
+                method: 'POST',
+                body: avaData
+            }
+        )
+        const file = await res.json()
+        console.log(file)
+        setImage(file.secure_url)
     }
 
 
@@ -126,16 +153,15 @@ function AddCard(props) {
                     <div className='content-title'>Avatar<span>*</span></div>
                     <label htmlFor="contained-button-file">
                         <Input accept="image/*" id="contained-button-file"
-
                             className="stack-input-ava"
                             multiple type="file"
-                            value={avatar}
+                            name='file'
                             onChange={onAvatarChanged} />
                         <div className='stack-upload'>
                             <img src={avatarError ? images.red : images.upload}
                                 // style={inputError ? {} : {backgroundImage: url(images.upload)}}
                                 className="upload-icon" />
-                            <div className='content-upload'>Upload image</div>
+                            <div className='content-upload'>{avatar !== '' ? avatar : 'Upload image'}</div>
                         </div>
                     </label>
                 </Stack>
@@ -173,15 +199,16 @@ function AddCard(props) {
                 </Stack>
                 <Stack id="stack-add" direction="row" spacing={6.8} alignItems="center" >
                     <div className='content-title'> Image:</div>
-                    <label htmlFor="contained-button-file">
+                    <label htmlFor="contained-button-file-img">
                         <Input accept="image/*"
-                            id="contained-button-file"
-                            multiple type="file"
-                            value={image}
+                            id="contained-button-file-img"
+                            multiple
+                            type="file"
+                            name='image'
                             onChange={onImageChanged} />
                         <div className='stack-upload'>
                             <img src={images.upload} alt="upload" className="upload-icon" />
-                            <div>Upload image</div>
+                            <div>{image !== '' ? image : 'Upload image'}</div>
                         </div>
                     </label>
                 </Stack>

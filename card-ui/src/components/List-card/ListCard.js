@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import AddCard from '../Add-card/AddCard';
 import { Link, Router, useNavigate } from "react-router-dom";
 import images from '../../assets/images/index';
+import Image1 from '../../assets/images/Image1.png';
 // material UI
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -18,43 +19,48 @@ import NoCard from '../None/NoCard';
 
 
 
+
 export const ListCard = () => {
     const dispatch = useDispatch();
     const history = useNavigate();
     const [data, setData] = useState([]);
     const [open, setOpen] = React.useState(false);
+
     const [del, setDel] = React.useState(false);
     const [edit, setEdit] = React.useState(false);
 
-    const [delId, setDelId] = React.useState("");
+    const [getId, setGetId] = React.useState("");
     const [editId, setEditId] = useState("")
 
     //search
     const [search, setSearch] = useState('')
 
-    const filterCard = data.filter(post => post.name.includes(search) || post.description.includes(search))
+
 
     // get data and show off
     useEffect(() => {
-        axios('http://localhost:3032/api/card')
+        axios('http://192.168.0.146:3032/api/card')
             .then(res => setData(res.data.data))
     }, [])
+    const filterCard = data.filter(post => post.name.includes(search) || post.description.includes(search))
 
     // Handle pop up form
     // pop up edit
     const handleCickEdit = (id) => {
-        setEditId(id)
+        setGetId(id)
         setEdit(true);
+
     }
     // pop up del
     const handleClickDel = (id) => {
-        setDelId(id)
+        setGetId(id)
         setDel(true);
     }
     //popup add
     const handleClickOpen = () => {
         setOpen(true);
     };
+
 
     //Get date created
     const convertDate1 = (day) => {
@@ -79,15 +85,15 @@ export const ListCard = () => {
                     <img src={images.pencil} alt="pencil" className="pencil-icon"
                         to={`/update/${post._id}`}
                         onClick={() => handleCickEdit(post._id)} />
-                    <UpdateCard id='Popup-edit' editId={editId} edit={edit} handleCloseEdit={() => setEdit(false)} />
+                    <UpdateCard id='Popup-edit' getId={getId} edit={edit} handleCloseEdit={() => setEdit(false)} />
                     <img src={images.trash} alt="trash" className="trash-icon" onClick={() => handleClickDel(post._id)}
                     />
-                    <DelCard id='Popup-show' delId={delId} del={del} handleCloseDel={() => setDel(false)} />
+                    <DelCard id='Popup-show' getId={getId} del={del} handleCloseDel={() => setDel(false)} />
                 </div>
             </div>
             <div className="cards_footer">
                 <div className="cards_desc">{post.description}</div>
-                <img className="cards_image" src={post.image} alt='' />
+                <img className="cards_image" src={post.image || Image1} alt='' />
             </div>
         </article >
     ))
