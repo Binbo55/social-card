@@ -27,32 +27,13 @@ function AddCard(props) {
     const [name, setName] = useState('')
     const [description, setDesc] = useState('')
     const [image, setImage] = useState('')
-
     const [nameError, setNameError] = useState(false)
     const [avatarError, setAvatarError] = useState(false)
     const [descError, setDescError] = useState(false)
 
-
     const dispatch = useDispatch();
 
-    const onAvatarChanged = async (e) => {
-        const files = e.target.files
-        const avaData = new FormData()
-        avaData.append('file', files[0])
-        avaData.append('upload_preset', 'ava-upload')
 
-        const res = await fetch('https://api.cloudinary.com/v1_1/hieuduke123/image/upload',
-            {
-                method: 'POST',
-                body: avaData
-            }
-        )
-
-        const file = await res.json()
-        console.log(file)
-        setAvatar(file.secure_url)
-        setAvatarError(false)
-    }
     const onNameChanged = (e) => {
         setName(e.target.value)
         setNameError('')
@@ -62,42 +43,78 @@ function AddCard(props) {
         setDesc(e.target.value)
         setDescError('')
     }
-    const onImageChanged = async (e) => {
-        const files = e.target.files
-        const imgData = new FormData()
-        imgData.append('file', files[0])
-        imgData.append('upload_preset', 'image-upload')
+    const onAvatarChanged = async (e) => {
+        const files = e.target.files[0]
+        const fileTypes = files.type
 
-        const res = await fetch('https://api.cloudinary.com/v1_1/hieuduke123/image/upload',
-            {
-                method: 'POST',
-                body: imgData
-            }
-        )
-        const file = await res.json()
-        console.log(file)
-        setImage(file.secure_url)
+        const avaData = new FormData()
+        avaData.append('file', files)
+        avaData.append('upload_preset', 'ava-upload')
+        if (fileTypes === 'image/jpeg' || fileTypes === 'image/png') {
+            const res
+                = await fetch('https://api.cloudinary.com/v1_1/hieuduke123/image/upload',
+                    {
+                        method: 'POST',
+                        body: avaData
+                    }
+                )
+
+            const file = await res.json()
+
+            setAvatar(file.secure_url)
+            setAvatarError(false)
+        } else {
+            alert('File the not match!!')
+            setAvatar('')
+            setAvatarError(true)
+        }
+    }
+
+    const onImageChanged = async (e) => {
+        const files = e.target.files[0]
+        const fileTypes = files.type
+        const imgData = new FormData()
+        imgData.append('file', files)
+        imgData.append('upload_preset', 'image-upload')
+        if (fileTypes === 'image/jpeg' || fileTypes === 'image/png') {
+            const res
+                = await fetch('https://api.cloudinary.com/v1_1/hieuduke123/image/upload',
+                    {
+                        method: 'POST',
+                        body: imgData
+                    }
+                )
+
+            const file = await res.json()
+            setImage(file.secure_url)
+
+        } else {
+            alert('File the not match!!')
+
+            setImage('')
+        }
     }
 
 
+
     // save card handle\
-    const onSavePostClicked = async (event) => {
+    const onSavePostClicked = async (e) => {
         let check = true
-        if (avatar && name && description && image) {
+        if (avatar && name && description) {
             dispatch(
                 cardAdded(avatar, name, description, image)
             )
             setAvatar('')
             setName('')
             setDesc('')
-            setImage('')
-            window.location.href = "/"
+
+            handleClose()
         }
         // validate name
         if (name === "") {
             check = false
             setNameError(true)
-            event.preventDefault();
+            e.preventDefault();
         } else {
             check = true
             setNameError(false)
@@ -106,7 +123,7 @@ function AddCard(props) {
         if (description === "") {
             check = false
             setDescError(true)
-            event.preventDefault();
+            e.preventDefault();
         }
         else {
             check = true
@@ -116,13 +133,15 @@ function AddCard(props) {
         if (avatar === "") {
             check = false
             setAvatarError(true)
-            event.preventDefault();
+            e.preventDefault();
         }
         else {
             check = true
             setAvatarError(false)
         }
     }
+
+
 
     // handlerCloseCancel
     const handlerCloseCancel = () => {
@@ -139,8 +158,6 @@ function AddCard(props) {
 
     return (
         <Dialog
-            // onSubmit={handleSubmit(onSubmit)}
-            // className="wrap-popup-add"
             open={open}
             onClose={handleClose}
             aria-labelledby="alert-dialog-title"
@@ -149,7 +166,6 @@ function AddCard(props) {
                 <div className='add-list-heard'>Add New Card</div>
                 <Stack id="stack-add"
                     style={avatarError ? { color: "#F3115E" } : { color: "#000" }}
-
                     className='stack'
                     direction="row" spacing={6}>
                     <div className='content-title'>Avatar<span>*</span></div>
@@ -158,10 +174,11 @@ function AddCard(props) {
                             className="stack-input-ava"
                             multiple type="file"
                             name='file'
-                            onChange={onAvatarChanged} />
+                            onChange={onAvatarChanged}
+
+                        />
                         <div className='stack-upload'>
                             <img src={avatarError ? images.red : images.upload}
-                                // style={inputError ? {} : {backgroundImage: url(images.upload)}}
                                 className="upload-icon" />
                             <div className='content-upload'>{avatar !== '' ? avatar : 'Upload image'}</div>
                         </div>

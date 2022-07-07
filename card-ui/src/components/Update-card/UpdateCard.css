@@ -75,7 +75,7 @@ h4 {
 
 }
 
-#contained-button-file-edit {
+#contained-button-file-avatar {
     display: none;
 }
 
@@ -156,4 +156,11 @@ h4 {
 
 .form-control-edit {
     height: 35px;
+}
+
+.img-name-edit {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 320px;
 }

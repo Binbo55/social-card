@@ -14,8 +14,9 @@ import Stack from '@mui/material/Stack';
 import DialogContent from '@mui/material/DialogContent';
 import Dialog from '@mui/material/Dialog';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
-
+import { useParams } from 'react-router-dom';
 import { editCard } from '../CardSlice';
+import axios from 'axios';
 
 
 UpdateCard.propTypes = {
@@ -24,8 +25,8 @@ UpdateCard.propTypes = {
 
 function UpdateCard(props) {
     const { edit, handleCloseEdit, getId } = props
-
-    const [avatar, setAvatar] = useState('')
+    const path = useParams();
+    const [avatar, setAvatar] = useState(null)
     const [name, setName] = useState('')
     const [description, setDesc] = useState('')
     const [image, setImage] = useState('')
@@ -34,26 +35,71 @@ function UpdateCard(props) {
     const [avatarError, setAvatarError] = useState(false)
     const [descError, setDescError] = useState(false)
 
-
     const dispatch = useDispatch();
 
-    // useEffect(() => {
-    //     editCard.get(edit)
-    //         .then((res) => {
-    //             setName(res.name);
-    //             setAvatar(res.avatar);
-    //             setDesc(res.description);
-    //             setImage(res.image);
-    //         })
-    //         .catch((err) => console.log(err))
-    // })
+    useEffect(() => {
+        axios.get(`http://192.168.0.146:3032/api/card/${getId}`)
+            .then((res) => {
+                setName(res.data.name);
+                setAvatar(res.data.avatar);
+                setDesc(res.data.description);
+                setImage(res.data.image);
+            })
 
-    const onAvatarChanged = (e) => {
-        setAvatar(e.target.value)
-        setAvatarError("")
-        console.log(e.target.value)
-        console.log(avatarError)
+    }, [getId])
+
+
+
+    const onAvatarChanged = async (e) => {
+        const files = e.target.files[0]
+        const fileTypes = files.type
+        console.log(fileTypes)
+        const avaData = new FormData()
+        avaData.append('file', files)
+        avaData.append('upload_preset', 'ava-upload')
+        if (fileTypes === 'image/jpeg' || fileTypes === 'image/png') {
+            const res
+                = await fetch('https://api.cloudinary.com/v1_1/hieuduke123/image/upload',
+                    {
+                        method: 'POST',
+                        body: avaData
+                    }
+                )
+
+            const file = await res.json()
+            setAvatar(pre => file.secure_url)
+            setAvatarError(false)
+        } else {
+            alert('File the not match!!')
+            setAvatar('')
+            setAvatarError(true)
+        }
     }
+    const onImageChanged = async (e) => {
+        const files = e.target.files[0]
+        const fileTypes = files.type
+        const imgData = new FormData()
+        imgData.append('file', files)
+        imgData.append('upload_preset', 'image-upload')
+        if (fileTypes === 'image/jpeg' || fileTypes === 'image/png') {
+            const res = await fetch('https://api.cloudinary.com/v1_1/hieuduke123/image/upload',
+                {
+                    method: 'POST',
+                    body: imgData
+                }
+            )
+            const file = await res.json()
+
+            setImage(file.secure_url)
+            setImage(pre => file.secure_url)
+        } else {
+            alert('File image the not match!!')
+            setImage('')
+        }
+
+
+    }
+
 
     const onNameChanged = (e) => {
         setName(e.target.value)
@@ -64,27 +110,11 @@ function UpdateCard(props) {
         setDesc(e.target.value)
         setDescError('')
     }
-    const onImageChanged = (e) => {
-        setImage(e.target.value)
-    }
 
     // save card handle\
     const onSavePostClicked = async (event) => {
         let check = true
         const id = getId
-
-        if (check) {
-
-            await dispatch(
-                editCard(id, avatar, name, description)
-            )
-            setAvatar('')
-            setName('')
-            setDesc('')
-            console.log('update thanfh coong')
-            window.location.href = "/"
-        }
-        // validate name
         if (name === "") {
             check = false
             setNameError(true)
@@ -93,7 +123,6 @@ function UpdateCard(props) {
             check = true
             setNameError(false)
         }
-        // description
         if (description === "") {
             check = false
             setDescError(true)
@@ -103,7 +132,6 @@ function UpdateCard(props) {
             check = true
             setDescError(false)
         }
-
         if (avatar === "") {
             check = false
             setAvatarError(true)
@@ -113,10 +141,18 @@ function UpdateCard(props) {
             check = true
             setAvatarError(false)
         }
-
+        if (!check) {
+            event.preventDefault();
+        } else if (avatar && name && description) {
+            await dispatch(
+                editCard(getId, avatar, name, description, image)
+            )
+            setAvatar('')
+            setName('')
+            setDesc('')
+            handlerCloseCancel()
+        }
     }
-
-
     // handlerCloseCancel
     const handlerCloseCancel = () => {
         setAvatar('')
@@ -130,9 +166,7 @@ function UpdateCard(props) {
 
     return (
         <Dialog
-            // to={`/update/${post._id}`}
-            // onSubmit={handleSubmit(onSubmit)}
-            // className="wrap-popup-add"
+
             BackdropProps={{
                 style: {
                     backgroundColor: 'rgba(0, 0, 0, 0.12)',
@@ -156,19 +190,16 @@ function UpdateCard(props) {
                     className='stack'
                     direction="row" spacing={6}>
                     <div className='content-title'>Avatar<span>*</span></div>
-                    <label htmlFor="contained-button-file">
-                        <Input accept="image/*" id="contained-button-file"
-
+                    <label htmlFor="contained-button-file-avatar">
+                        <Input accept="image/*" id="contained-button-file-avatar"
                             className="stack-input-ava"
                             multiple type="file"
-                            name='avatar'
-                            value={avatar}
+                            name='file'
                             onChange={onAvatarChanged} />
                         <div className='stack-upload'>
                             <img src={avatarError ? images.red : images.upload}
-                                // style={inputError ? {} : {backgroundImage: url(images.upload)}}
                                 className="upload-icon" />
-                            <div className='content-upload'>Upload image</div>
+                            <div className='img-name-edit'>{avatar || 'Upload image'}</div>
                         </div>
                     </label>
                 </Stack>
@@ -210,11 +241,11 @@ function UpdateCard(props) {
                         <Input accept="image/*"
                             id="contained-button-file"
                             multiple type="file"
-                            value={image}
+                            name='image'
                             onChange={onImageChanged} />
                         <div className='stack-upload'>
                             <img src={images.upload} alt="upload" className="upload-icon" />
-                            <div>Upload image</div>
+                            <div className='img-name-edit'> {image !== '' ? image : 'Upload image'}</div>
                         </div>
                     </label>
                 </Stack>

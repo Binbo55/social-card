@@ -30,7 +30,7 @@ export const ListCard = () => {
     const [edit, setEdit] = React.useState(false);
 
     const [getId, setGetId] = React.useState("");
-    const [editId, setEditId] = useState("")
+
 
     //search
     const [search, setSearch] = useState('')
@@ -41,7 +41,7 @@ export const ListCard = () => {
     useEffect(() => {
         axios('http://192.168.0.146:3032/api/card')
             .then(res => setData(res.data.data))
-    }, [])
+    }, [data])
     const filterCard = data.filter(post => post.name.includes(search) || post.description.includes(search))
 
     // Handle pop up form
@@ -68,7 +68,12 @@ export const ListCard = () => {
         const dateAt = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
         return dateAt;
     };
-    console.log(filterCard);
+
+    const handleCloseEditLast = () => {
+        setEdit(false);
+        setGetId(null);
+    }
+
     const renderedPosts = filterCard.map(post => (
         < article className="cards" key={post._id} >
             <div className="cards_header">
@@ -85,10 +90,8 @@ export const ListCard = () => {
                     <img src={images.pencil} alt="pencil" className="pencil-icon"
                         to={`/update/${post._id}`}
                         onClick={() => handleCickEdit(post._id)} />
-                    <UpdateCard id='Popup-edit' getId={getId} edit={edit} handleCloseEdit={() => setEdit(false)} />
                     <img src={images.trash} alt="trash" className="trash-icon" onClick={() => handleClickDel(post._id)}
                     />
-                    <DelCard id='Popup-show' getId={getId} del={del} handleCloseDel={() => setDel(false)} />
                 </div>
             </div>
             <div className="cards_footer">
@@ -116,7 +119,7 @@ export const ListCard = () => {
                         </Button>
                         {/* Popup */}
                     </Stack>
-                    {/* <AddCard id='Popup-show' open={open} handleClose={() => setOpen(false)} */}
+
                     <AddCard id='Popup-show' open={open} handleClose={handlerClose}
                     />
                 </div>
@@ -135,13 +138,19 @@ export const ListCard = () => {
                             onChange={(e) => setSearch(e.target.value)}
                         />
                         <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
-                            <img className='search-icon' src={images.search} alt="" />
+                            <img className='search-icon' style={{ textColor: 'blue' }} src={images.search} alt="" />
                         </IconButton>
                     </Paper>
                 </div>
             </div>
             {/* Card list */}
             <div className="cards-list" >
+                {edit && (
+                    <UpdateCard id='Popup-edit' getId={getId} edit={edit} handleCloseEdit={handleCloseEditLast} />
+                )}
+                {del && (
+                    <DelCard id='Popup-show' getId={getId} del={del} handleCloseDel={() => setDel(false)} />
+                )}
                 {filterCard.length > 0 ? renderedPosts : <NoCard />}
             </div>
         </section >

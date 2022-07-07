@@ -31,8 +31,8 @@ const CardSlice = createSlice({
         },
         editCard: {
             reducer(state, action) {
-                socialCardApi.update(action.payload.id, action.payload)
                 console.log(action.payload)
+                socialCardApi.update(action.payload.id, action.payload)
             },
             prepare(id, avatar, name, description, image) {
                 return {
