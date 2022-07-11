@@ -7,14 +7,6 @@ const SocialCardsApi = {
     saveAll: (data) => {
         return AxiosClient.post('/add', data);
     },
-    // uploadFile: (upload) => {
-    //     const url = "/socialcards/upload";
-    //     return AxiosClient.post(url, upload)
-    // },
-    // uploadFileIMG: (upload) => {
-    //     const url = "/socialcards/upload_avatar";
-    //     return AxiosClient.post(url, upload)
-    // },
     delete: (id) => {
         const url = "/" + id;
         return AxiosClient.delete(url)
@@ -25,9 +17,6 @@ const SocialCardsApi = {
     },
     update: (id, data) => {
         return AxiosClient.put(`/${id}`, data)
-    },
-    updateStatus: (id, value) => {
-        return AxiosClient.get('/socialcards/update-status/' + id + '/' + value)
     },
     revertCard: (id) => {
         const url = `/revert/${id}`;

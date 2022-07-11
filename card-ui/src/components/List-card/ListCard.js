@@ -46,22 +46,13 @@ export const ListCard = () => {
     // get data and show off
     useEffect(() => {
         setTimeout(() => {
-            axios('http://localhost:3032/api/card')
+            axios('http://192.168.0.146:3032/api/card')
                 .then(res => setData(res.data.data))
 
         }, 500);
 
     }, [open, del, edit, countRevert])
 
-
-    const dat = data.length - 1;
-    if (addCheck && data.length > 0) {
-        setTimeout(() => {
-            dispatch(addRevert(data[dat]._id))
-
-        }, 900)
-        setAddCheck(false)
-    }
 
 
     const filterCard = data.filter(post => post.name.includes(search) || post.description.includes(search))

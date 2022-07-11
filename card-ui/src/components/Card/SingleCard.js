@@ -1,43 +1,54 @@
 import axios from "axios";
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import Image2x from '../../assets/images/Image1@2x.png';
 import images from '../../assets/images/index';
 import './SingleCard.css';
+import { getCard } from '../CardSlice';
 // Material UI
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 import Button from '@mui/material/Button';
 function SingleCard() {
     const path = useParams();
+    const dispatch = useDispatch();
     const [card, setCard] = useState([]);
     const [comments, setComments] = useState([]);
     const [saveComment, setSaveComment] = useState("");
     const [heart, setHeart] = useState(0);
     const [comentError, setCommentError] = useState(false);
+    const navigate = useNavigate();
 
 
     // get api to display
+
+
     useEffect(() => {
-        axios.get(`http://localhost:3032/api/card/${path.id}`)
-            .then((response) => { setCard(response.data); setHeart(response.data.heart) })
+
+        axios.get(`http://192.168.0.146:3032/api/card/${path.id}`)
+            .then((response) => response.data.deleted === false ? setCard(response.data) : navigate('/'))
             .catch((error) => console.log(error));
-    }, []);
+    }, [heart, comments]);
+
+
+
+    useEffect(() => {
+        axios.get(`http://192.168.0.146:3032/api/card/${path.id}`)
+            .then((res) => setHeart(res.data.heart))
+            .catch((err) => console.log(err));
+    }, [heart]);
 
     // get api to display comment
     useEffect(() => {
-        axios.get(`http://localhost:3032/api/comment/card/${path.id}`)
-            .then((response) => setComments(response.data))
-            .catch((error) => console.log(error));
-    }, []);
-
-
-
+        axios.get(`http://192.168.0.146:3032/api/comment/card/${path.id}`)
+            .then((res) => setComments(res.data))
+            .catch((err) => console.log(err));
+    }, [comments]);
 
     // Click like handle
     const handleClickTym = async () => {
-        console.log("test handle Click Tym");
-        await axios.put(`http://localhost:3032/api/card/heart/${path.id}`)
-            .then((res) => { window.location.reload() })
+        await axios.put(`http://192.168.0.146:3032/api/card/heart/${path.id}`)
+            .then((res) => setHeart(res.data.heart))
             .catch((err) => { console.log(err); })
     };
 
@@ -60,6 +71,7 @@ function SingleCard() {
         let check = true
         const data = { cardId: path.id, comment: saveComment }
         // console.log(saveComment)
+
         if (saveComment === "") {
             check = false
             setCommentError(true)
@@ -71,7 +83,7 @@ function SingleCard() {
         if (!check) {
             setCommentError(true)
         } else {
-            await axios.post(`http://localhost:3032/api/comment/add`, data)
+            await axios.post(`http://192.168.0.146:3032/api/comment/add`, data)
                 .then((res) => window.location.reload())
                 .catch((error) => console.log(error));
             setCommentError(false)

@@ -9,8 +9,8 @@ const CardSlice = createSlice({
     reducers: {
         cardAdded: {
             reducer(state, action) {
+
                 socialCardApi.saveAll(action.payload)
-                console.log(action.payload)
             },
             prepare(avatar, name, description, image) {
                 return {

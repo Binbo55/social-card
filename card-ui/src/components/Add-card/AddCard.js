@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { cardAdded } from '../CardSlice';
 import './AddCard.css';
 import images from '../../assets/images/index';
+import { addRevert } from '../RevertSlice';
 // Material UI
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
@@ -15,6 +16,7 @@ import Stack from '@mui/material/Stack';
 import DialogContent from '@mui/material/DialogContent';
 import Dialog from '@mui/material/Dialog';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
+import SocialCardsApi from '../../apis/socialCardApi';
 
 AddCard.propTypes = {
 
@@ -22,7 +24,7 @@ AddCard.propTypes = {
 
 
 function AddCard(props) {
-    const { open, handleClose, render, handleCheckAdd } = props
+    const { open, handleClose, handleCheckAdd, getId } = props
     const [avatar, setAvatar] = useState('')
     const [name, setName] = useState('')
     const [description, setDesc] = useState('')
@@ -100,15 +102,21 @@ function AddCard(props) {
     // save card handle\
     const onSavePostClicked = async (e) => {
         let check = true
+        const newCard = {
+            avatar: avatar,
+            name: name,
+            description: description,
+            image: image
+        }
         if (avatar && name && description) {
-            dispatch(
-                await cardAdded(avatar, name, description, image)
-            )
+            SocialCardsApi.saveAll(newCard)
+                .then((res) => dispatch(addRevert(res.newCard._id)))
             setAvatar('')
             setName('')
             setDesc('')
             handleCheckAdd()
             handleClose()
+
         }
         // validate name
         if (name === "") {
@@ -139,6 +147,8 @@ function AddCard(props) {
             check = true
             setAvatarError(false)
         }
+
+
     }
 
 

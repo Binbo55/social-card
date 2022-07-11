@@ -38,7 +38,7 @@ function UpdateCard(props) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        axios.get(`http://localhost:3032/api/card/${getId}`)
+        axios.get(`http://192.168.0.146:3032/api/card/${getId}`)
             .then((res) => {
                 setName(res.data.name);
                 setAvatar(res.data.avatar);
@@ -96,8 +96,6 @@ function UpdateCard(props) {
             alert('File image the not match!!')
             setImage('')
         }
-
-
     }
 
 
@@ -166,7 +164,6 @@ function UpdateCard(props) {
 
     return (
         <Dialog
-
             BackdropProps={{
                 style: {
                     backgroundColor: 'rgba(0, 0, 0, 0.12)',

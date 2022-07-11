@@ -162,5 +162,6 @@ h4 {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    width: 320px;
+    width: 260px;
+    margin-left: 11px;
 }

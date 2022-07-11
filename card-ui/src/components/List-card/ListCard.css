@@ -46,6 +46,7 @@
 }
 
 .css-e53awj-MuiStack-root>:not(style)+:not(style) {
+
     width: 107px;
     height: 50px;
     background: #064EBC 0% 0% no-repeat padding-box;
@@ -71,6 +72,7 @@
 
 #add-btn {
     text-transform: none;
+    margin-left: 15px;
 }
 
 section {
